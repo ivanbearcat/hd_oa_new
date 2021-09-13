@@ -20,6 +20,7 @@ class table(models.Model):
         ('存储设备', '存储设备'),
     )
     status_choices = (
+        ('使用中','使用中'),
         ('库存', '库存'),
         ('出库', '出库'),
         ('报废', '报废'),
@@ -33,8 +34,8 @@ class table(models.Model):
     user = models.CharField(verbose_name='用户名', max_length=32, blank=True, null=True)
     password = models.CharField(verbose_name='密码', max_length=32, blank=True, null=True)
     model = models.CharField(verbose_name='型号', max_length=32, blank=True, null=True)
-    sn_mainboard = models.CharField(verbose_name='主板序列号', max_length=16, blank=True, null=True)
-    sn_BIOS = models.CharField(verbose_name='BIOS序列号', max_length=16, blank=True, null=True)
+    sn_mainboard = models.CharField(verbose_name='主板序列号', max_length=32, blank=True, null=True)
+    sn_BIOS = models.CharField(verbose_name='BIOS序列号', max_length=32, blank=True, null=True)
     cpu = models.CharField(verbose_name='cpu', max_length=16, blank=True, null=True)
     memory = models.CharField(verbose_name='内存', max_length=16, blank=True, null=True)
     disk = models.CharField(verbose_name='硬盘', max_length=16, blank=True, null=True)

@@ -54,7 +54,8 @@ class tableAdmin(admin.ModelAdmin, ExportExcelMixin, AdminConfirmMixin):
 
     # list_display_links = ('server_ip',)
 
-    search_fields = ('server_ip', 'sn_mainboard', 'sn_BIOS', 'owner', 'checker', 'is_use', 'remote_card_ip', 'new_asset_number')
+    search_fields = ('name', 'server_ip', 'model', 'sn_mainboard', 'sn_BIOS', 'owner', 'checker', 'is_use',
+                     'remote_card_ip', 'new_asset_number')
 
     date_hierarchy = 'create_time'
 
@@ -68,7 +69,7 @@ class tableAdmin(admin.ModelAdmin, ExportExcelMixin, AdminConfirmMixin):
     @confirm_action
     def outbound(self, request, queryset):
         for obj in queryset:
-            if obj.status == '库存':
+            if obj.status == '库存' or obj.status == '使用中':
                 obj.status = '出库审批'
                 obj.save()
                 LogEntry.objects.log_action(
