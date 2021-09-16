@@ -54,8 +54,10 @@ class tableAdmin(admin.ModelAdmin, ExportExcelMixin, AdminConfirmMixin):
 
     # list_display_links = ('server_ip',)
 
+    readonly_fields = ('organization', 'location')
+
     search_fields = ('name', 'server_ip', 'model', 'sn_mainboard', 'sn_BIOS', 'owner', 'checker', 'is_use',
-                     'remote_card_ip', 'new_asset_number')
+                     'remote_card_ip', 'new_asset_number', 'location')
 
     date_hierarchy = 'create_time'
 
@@ -90,8 +92,9 @@ class tableAdmin(admin.ModelAdmin, ExportExcelMixin, AdminConfirmMixin):
     @confirm_action
     def _check(self, request, queryset):
         for obj in queryset:
-            if obj.status == '出库' or obj.status == '库存':
+            if obj.status == '出库' or obj.status == '库存' or obj.status == '使用中':
                 obj.status = '库存'
+                obj.checker = request.user.firstname
                 obj.save()
                 LogEntry.objects.log_action(
                     user_id=request.user.pk,
@@ -150,7 +153,7 @@ class tableAdmin(admin.ModelAdmin, ExportExcelMixin, AdminConfirmMixin):
     @confirm_action
     def approve(self, request, queryset):
         for obj in queryset:
-            if request.user.has_perm('table.approver') or request.user.is_superuser:
+            if request.user.has_perm('asset.approver') or request.user.is_superuser:
                 if '审批' in obj.status:
                     obj.status = obj.status[:-2]
                     obj.save()
@@ -179,7 +182,7 @@ class tableAdmin(admin.ModelAdmin, ExportExcelMixin, AdminConfirmMixin):
                                    'owner_department', 'is_use', '_type', 'cost_center', 'checker', 'location', 'status']}),
                 ('密码', {'fields': ['password', 'remote_card_password'], 'classes': ['collapse']}),
             ]
-        elif request.user.has_perm('table.can_view_password') or request.user.is_superuser:
+        elif request.user.has_perm('asset.can_view_password') or request.user.is_superuser:
             self.fieldsets = [
                 (None, {'fields': ['name', 'server_ip', 'ssh_port', 'user', 'model', 'sn_mainboard', 'sn_BIOS', 'cpu',
                                    'memory', 'disk', 'os', 'deployment_plan', 'doployment_mod', 'remote_card_ip',
@@ -206,7 +209,7 @@ class tableAdmin(admin.ModelAdmin, ExportExcelMixin, AdminConfirmMixin):
         """
         orm = table.objects.filter(id=object.pk)
         all_fields_list = table._meta.get_fields()
-        verbose_name_dict = {i.name: i.verbose_name for i in all_fields_list}
+        verbose_name_dict = {i.name: i.verbose_name for i in all_fields_list if i.name != 'comment'}
         data_dict = list(orm.values(*[i.name for i in all_fields_list]))[0]
         message = {'新增内容': {verbose_name_dict[k]: v for k,v in data_dict.items() if v}}
         return LogEntry.objects.log_action(
@@ -232,14 +235,16 @@ class tableAdmin(admin.ModelAdmin, ExportExcelMixin, AdminConfirmMixin):
             data_dict = {}
             orm = table.objects.filter(id=object.pk)
             for field in table._meta.get_fields():
-                if field.verbose_name in verbose_name_list:
-                    name_dict[field.name] = field.verbose_name
+                if hasattr(field, 'verbose_name'):
+                    if field.verbose_name in verbose_name_list:
+                        name_dict[field.name] = field.verbose_name
             for i in list(orm.values(*name_dict.keys())):
                 for k, v in i.items():
                     data_dict[name_dict[k]] = v
             message = {'修改后内容': data_dict}
         except Exception:
-            pass
+            import traceback
+            print(traceback.format_exc())
         return LogEntry.objects.log_action(
             user_id=request.user.pk,
             content_type_id=get_content_type_for_model(object).pk,
@@ -249,7 +254,21 @@ class tableAdmin(admin.ModelAdmin, ExportExcelMixin, AdminConfirmMixin):
             change_message=message,
         )
 
+    # 重写保存数据时进行的操作
+    def save_model(self, request, obj, form, change):
+        print(request)
+        obj.save()
 
+
+    def change_view(self, request, object_id, form_url='', extra_context=None):
+        print(object_id)
+        orm = table.objects.get(id=object_id)
+        print(orm.status)
+        if orm.status == '出库':
+            self.readonly_fields = ()
+        else:
+            self.readonly_fields = ('organization', 'location')
+        return super(tableAdmin, self).change_view(request, object_id, form_url='', extra_context=None)
 
 
 @admin.register(LogEntry)

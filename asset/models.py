@@ -64,5 +64,5 @@ class table(models.Model):
 class comment(models.Model):
     def __str__(self):
         return ''
-    info = models.TextField(verbose_name='备注', max_length=1024, blank=False, null=False)
+    info = models.TextField(verbose_name='备注', max_length=1024, blank=True, null=True)
     table = models.ForeignKey('table', on_delete=models.CASCADE)
