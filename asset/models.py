@@ -28,6 +28,10 @@ class table(models.Model):
         ('出库审批', '出库审批'),
         ('报废审批', '报废审批'),
     )
+    used_choices = (
+        ('是', '是'),
+        ('否', '否')
+    )
     name = models.CharField(verbose_name='资产名称', max_length=64, blank=True, null=True, default='x')
     server_ip = models.GenericIPAddressField(verbose_name='主机IP', blank=True, null=True)
     ssh_port = models.IntegerField(verbose_name='ssh端口', blank=True, null=True)
@@ -36,7 +40,7 @@ class table(models.Model):
     model = models.CharField(verbose_name='型号', max_length=32, blank=True, null=True)
     sn_mainboard = models.CharField(verbose_name='主板序列号', max_length=32, blank=True, null=True)
     sn_BIOS = models.CharField(verbose_name='BIOS序列号', max_length=32, blank=True, null=True)
-    cpu = models.CharField(verbose_name='cpu', max_length=16, blank=True, null=True)
+    cpu = models.CharField(verbose_name='cpu', max_length=64, blank=True, null=True)
     memory = models.CharField(verbose_name='内存', max_length=16, blank=True, null=True)
     disk = models.CharField(verbose_name='硬盘', max_length=16, blank=True, null=True)
     os = models.CharField(verbose_name='操作系统', max_length=64, blank=True, null=True)
@@ -50,7 +54,7 @@ class table(models.Model):
     new_asset_number = models.CharField(verbose_name='新资产编号', max_length=32, blank=True, null=True, unique=True, default='')
     owner = models.CharField(verbose_name='使用人', max_length=16, blank=True, null=True)
     owner_department = models.CharField(verbose_name='使用部门', max_length=16, blank=True, null=True)
-    is_use = models.CharField(verbose_name='使用情况', max_length=16, blank=True, null=True)
+    is_use = models.CharField(verbose_name='使用情况', max_length=2, blank=True, null=True, choices=used_choices)
     cost_center = models.CharField(verbose_name='成本中心', max_length=16, blank=True, null=True)
     checker = models.CharField(verbose_name='盘点人', max_length=16, blank=True, null=True)
     create_time = models.DateTimeField(verbose_name='登记时间', auto_now_add=True)
@@ -59,6 +63,7 @@ class table(models.Model):
     location = models.CharField(verbose_name='位置', max_length=32, blank=True, null=True)
     # comment = models.CharField(verbose_name='备注', max_length=512, blank=True, null=True)
     status = models.CharField(verbose_name='状态', max_length=16, blank=False, null=False, default='库存', choices=status_choices)
+
 
 
 class comment(models.Model):

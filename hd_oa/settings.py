@@ -85,7 +85,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'hd_oa',
 	    'USER': 'root',
-	    'PASSWORD': 'Hdyw@2021',
+	    'PASSWORD': 'xxxxxx',
 	    'HOST': '127.0.0.1',
     }
 }
@@ -147,7 +147,7 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
 
-LDAP_AUTH_URL = "ldap://192.168.9.251:389"
+LDAP_AUTH_URL = "ldap://192.168.x.x:389"
 LDAP_AUTH_USE_TLS = False
 LDAP_AUTH_SEARCH_BASE = 'ou=Users,ou=npnets,dc=npnets,dc=cn'
 LDAP_AUTH_OBJECT_CLASS = "user"
@@ -158,12 +158,13 @@ LDAP_AUTH_USER_FIELDS = {
     "email": "mail",
 }
 LDAP_AUTH_CLEAN_USER_DATA = "django_python3_ldap.utils.clean_user_data"
+# sync_user_relations需要修改源码函数进行操作
 LDAP_AUTH_SYNC_USER_RELATIONS = "django_python3_ldap.utils.sync_user_relations"
 LDAP_AUTH_FORMAT_SEARCH_FILTERS =  "django_python3_ldap.utils.format_search_filters"
 LDAP_AUTH_FORMAT_USERNAME =  "django_python3_ldap.utils.format_username_active_directory_principal"
 LDAP_AUTH_CONNECTION_USERNAME = "ad-acount" #需要同步用户才需要
-LDAP_AUTH_CONNECTION_PASSWORD = "0d^7^UPqj0" #需要同步用户才需要
-LDAP_AUTH_ACTIVE_DIRECTORY_DOMAIN = "npnets.cn"
+LDAP_AUTH_CONNECTION_PASSWORD = "xxxxxxx" #需要同步用户才需要
+LDAP_AUTH_ACTIVE_DIRECTORY_DOMAIN = "xxxxxx.cn"
 LDAP_AUTH_CONNECT_TIMEOUT = None
 LDAP_AUTH_RECEIVE_TIMEOUT = None
 

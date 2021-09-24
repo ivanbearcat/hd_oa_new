@@ -94,7 +94,7 @@ class tableAdmin(admin.ModelAdmin, ExportExcelMixin, AdminConfirmMixin):
         for obj in queryset:
             if obj.status == '出库' or obj.status == '库存' or obj.status == '使用中':
                 obj.status = '库存'
-                obj.checker = request.user.firstname
+                obj.checker = request.user.username
                 obj.save()
                 LogEntry.objects.log_action(
                     user_id=request.user.pk,
@@ -254,16 +254,9 @@ class tableAdmin(admin.ModelAdmin, ExportExcelMixin, AdminConfirmMixin):
             change_message=message,
         )
 
-    # 重写保存数据时进行的操作
-    def save_model(self, request, obj, form, change):
-        print(request)
-        obj.save()
-
 
     def change_view(self, request, object_id, form_url='', extra_context=None):
-        print(object_id)
         orm = table.objects.get(id=object_id)
-        print(orm.status)
         if orm.status == '出库':
             self.readonly_fields = ()
         else:
