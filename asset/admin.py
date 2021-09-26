@@ -9,7 +9,7 @@ from django.utils.html import format_html
 from admin_confirm import AdminConfirmMixin
 from admin_confirm.admin import confirm_action
 
-
+admin.site
 class ExportExcelMixin(AdminConfirmMixin, object):
     # 自定义actions导出Excel
     @confirm_action

@@ -20,6 +20,10 @@ from login.views import *
 from home.views import home
 
 
+admin.site.site_header = "航动资产管理"
+admin.site.site_title = "航动资产管理"
+admin.site.index_title = "资产管理"
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
