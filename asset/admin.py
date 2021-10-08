@@ -210,7 +210,7 @@ class tableAdmin(admin.ModelAdmin, ExportExcelMixin, AdminConfirmMixin):
         orm = table.objects.filter(id=object.pk)
         all_fields_list = table._meta.get_fields()
         verbose_name_dict = {i.name: i.verbose_name for i in all_fields_list if i.name != 'comment'}
-        data_dict = list(orm.values(*[i.name for i in all_fields_list]))[0]
+        data_dict = list(orm.values(*[i.name for i in all_fields_list if i.name != 'comment']))[0]
         message = {'新增内容': {verbose_name_dict[k]: v for k,v in data_dict.items() if v}}
         return LogEntry.objects.log_action(
             user_id=request.user.pk,
