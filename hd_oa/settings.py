@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django_python3_ldap',
     'admin_confirm',
     'asset',
+    'process',
 ]
 
 MIDDLEWARE = [

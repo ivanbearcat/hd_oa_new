@@ -25,7 +25,7 @@ def table_data(request):
         tableData.append({
             'id': i.id,
             'model': i.model,
-            'sn': i.sn,
+            'sn': '',
             'organization': i.organization,
             'new_asset_number': i.new_asset_number,
             'owner': i.owner,
