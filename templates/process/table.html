@@ -41,8 +41,17 @@
               <el-form-item label="需求描述:" >
                 <span>{{ props.row.description }}</span>
               </el-form-item>
+              <el-form-item v-if="props.row.result != ''" label="处理结果:" >
+                <span>{{ props.row.result }}</span>
+              </el-form-item>
             </el-form>
           </template>
+        </el-table-column>
+        <el-table-column
+          sortable
+          label="id"
+          prop="id"
+          width="70">
         </el-table-column>
         <el-table-column
           sortable
@@ -74,6 +83,11 @@
           sortable
           label="申请时间"
           prop="create_time">
+        </el-table-column>
+        <el-table-column
+          sortable
+          label="完成时间"
+          prop="finish_time">
         </el-table-column>
         <el-table-column
           label="操作">
@@ -113,29 +127,31 @@
                 <el-option label="上海联通" value="上海联通"></el-option>
                 <el-option label="江苏联通" value="江苏联通"></el-option>
                 <el-option label="河北联通" value="河北联通"></el-option>
-                <el-option label="湖南联通（2.0项目机房）" value="湖南联通（2.0项目机房）"></el-option>
-                <el-option label="湖南联通（4.0项目机房）" value="湖南联通（4.0项目机房）"></el-option>
+                <el-option label="湖南联通(2.0项目机房)" value="湖南联通(2.0项目机房)"></el-option>
+                <el-option label="湖南联通(4.0项目机房)" value="湖南联通(4.0项目机房)"></el-option>
                 <el-option label="江西联通" value="江西联通"></el-option>
-                <el-option label="广西联通（联通资源）" value="广西联通（联通资源）"></el-option>
-                <el-option label="四川联通（联通资源）" value="四川联通（联通资源）"></el-option>
-                <el-option label="北京联通（联通资源）" value="北京联通（联通资源）"></el-option>
-                <el-option label="河南联通（联通资源）" value="河南联通（联通资源）"></el-option>
-                <el-option label="湖北联通（联通资源）" value="湖北联通（联通资源）"></el-option>
+                <el-option label="广西联通(联通资源)" value="广西联通(联通资源)"></el-option>
+                <el-option label="四川联通(联通资源)" value="四川联通(联通资源)"></el-option>
+                <el-option label="北京联通(联通资源)" value="北京联通(联通资源)"></el-option>
+                <el-option label="河南联通(联通资源)" value="河南联通(联通资源)"></el-option>
+                <el-option label="湖北联通(联通资源)" value="湖北联通(联通资源)"></el-option>
                 <el-option label="IDC项目" value="IDC项目"></el-option>
-                <el-option label="测试环境（航动502）" value="测试环境（航动502）"></el-option>
-                <el-option label="测试环境（IDC）" value="测试环境（IDC）"></el-option>
+                <el-option label="测试环境(航动502)" value="测试环境(航动502)"></el-option>
+                <el-option label="测试环境(IDC)" value="测试环境(IDC)"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="需求类型" :label-width="formLabelWidth">
               <el-select v-model="form._type" placeholder="请选择需求类型">
                 <el-option label="网络需求" value="网络需求"></el-option>
                 <el-option label="服务器需求" value="服务器需求"></el-option>
+                <el-option label="堡垒机权限" value="堡垒机权限"></el-option>
+                <el-option label="账号申请" value="账号申请"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="需求描述" :label-width="formLabelWidth">
                 <el-col :span="18">
                     <el-input
-                      :autosize="{ minRows: 3 }"
+                      :autosize="{ minRows: 15 }"
                       type="textarea"
                       placeholder="请输入内容"
                       v-model="form.description">
@@ -149,6 +165,27 @@
           </div>
         </el-dialog>
 
+        <el-dialog title="确认完成"
+                   :visible.sync="conformDialogFormVisible"
+                   :append-to-body="true"
+                   :before-close="handleClose">
+          <el-form :model="form">
+            <el-form-item label="处理结果" :label-width="formLabelWidth">
+                <el-col :span="18">
+                    <el-input
+                      :autosize="{ minRows: 3 }"
+                      type="textarea"
+                      placeholder="请输入内容"
+                      v-model="form.result">
+                    </el-input>
+                </el-col>
+            </el-form-item>
+          </el-form>
+          <div slot="footer" class="dialog-footer">
+            <el-button @click="conformDialogFormVisible = false">取 消</el-button>
+            <el-button type="primary" @click="conform">确 定</el-button>
+          </div>
+        </el-dialog>
     </div>
 </template>
 
@@ -208,12 +245,14 @@
                         currentPage: 1,
                         pageSize: 10,
                         dialogFormVisible: false,
+                        conformDialogFormVisible: false,
                         form: {
                           id: '',
                           name: '',
                           cities: '',
                           _type: '',
                           description: '',
+                          result: '',
                           status: '',
                           processor: '',
                           create_time: ''
@@ -357,12 +396,9 @@
                     },
                     handleCommit(index, row) {
                         //完成按钮
-                        this.$confirm('确认完成？')
-                          .then(_ => {
-                            data = { id: row.id };
-                            this.post_data('/process/table_commit/',data)
-                          })
-                          .catch(_ => {});
+                        this.form.id = row.id
+                        this.form.result = row.result
+                        this.conformDialogFormVisible = true
                     },
                     handleDelete(index, row) {
                         //删除按钮
@@ -384,8 +420,23 @@
                         this.post_data('/process/table_save/',data)
                         this.dialogFormVisible = false
                     },
+                    conform(){
+                        let data = {
+                              id: this.form.id,
+                              result: this.form.result,
+                        };
+                        this.post_data('/process/table_commit/',data)
+                        this.conformDialogFormVisible = false
+                    },
                     enable_button(row){
                         if (row.status == '已完成'){
+                            return true
+                        }else{
+                            return false
+                        }
+                    },
+                    show_result(row){
+                        if (row.result == ''){
                             return true
                         }else{
                             return false

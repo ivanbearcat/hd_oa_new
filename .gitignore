@@ -1,6 +1,6 @@
 # Byte-compiled / optimized / DLL files
 nohup.out
-hd_oa/settings.py
+settings.py
 __pycache__/
 *.py[cod]
 *$py.class

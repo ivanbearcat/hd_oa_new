@@ -86,8 +86,12 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'hd_oa',
 	    'USER': 'root',
-	    'PASSWORD': 'xxxxxxxx',
+	    'PASSWORD': 'xxxxxxx',
 	    'HOST': '127.0.0.1',
+        'OPTIONS': {
+            'init_command': 'SET sql_mode="STRICT_TRANS_TABLES"',
+        },
+        'ATOMIC_REQUESTS': True,
     }
 }
 
@@ -140,6 +144,9 @@ STATICFILES_DIRS = (
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+DATA_UPLOAD_MAX_MEMORY_SIZE = 102400
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 5000
 
 # LDAP
 AUTHENTICATION_BACKENDS = [

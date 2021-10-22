@@ -38,27 +38,49 @@
         <el-table-column
           sortable
           min-width="130"
-          label="资产编号"
-          prop="new_asset_number"
+          label="资产名称"
+          prop="name"
           width="">
         </el-table-column>
         <el-table-column
           sortable
-          min-width="110"
-          label="设备型号"
-          prop="model">
+          min-width="130"
+          label="资产类别"
+          prop="_type"
+          width="">
         </el-table-column>
         <el-table-column
           sortable
           min-width="130"
-          label="设备序列号"
-          prop="sn">
+          label="主板sn号"
+          prop="sn_mainboard"
+          width="">
+        </el-table-column>
+        <el-table-column
+          sortable
+          min-width="130"
+          label="BIOSsn号"
+          prop="sn_BIOS"
+          width="">
         </el-table-column>
         <el-table-column
           sortable
           min-width="110"
           label="组织实体"
           prop="organization">
+        </el-table-column>
+        <el-table-column
+          sortable
+          min-width="110"
+          label="位置"
+          prop="location">
+        </el-table-column>
+        <el-table-column
+          sortable
+          min-width="130"
+          label="资产编号"
+          prop="new_asset_number"
+          width="">
         </el-table-column>
         <el-table-column
           sortable
@@ -118,10 +140,11 @@
 <!--
 <script src="https://unpkg.com/element-ui/lib/index.js"></script>
 -->
-<script src="/static/custom/js/index.js"></script>
+<!--<script src="/static/custom/js/index.js"></script>-->
 <script src="/static/custom/js/axios.min.js"></script>
 
-<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css"/>
+<script src="https://unpkg.com/element-ui@2.15.6/lib/index.js"></script>
+<link rel="stylesheet" href="//unpkg.com/element-ui@2.15.6/lib/theme-chalk/index.css"/>
 
 
 <script>
@@ -183,7 +206,7 @@
                     search(keywords) {
                         //数据搜索
                         let newList = this.tableData.filter(item=>{
-                            if(item.new_asset_number.includes(keywords)){
+                            if(item.name.includes(keywords)){
                                 return true
                             }
                         });
