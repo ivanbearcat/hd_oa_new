@@ -20,5 +20,5 @@ from user.views import *
 
 urlpatterns = [
     url(r'^chpasswd/$', chpasswd),
-    url(r'^post_chpasswd/$', post_chpasswd),
+    url(r'^post_chpasswd/$', post_chpasswd_ldap),
 ]

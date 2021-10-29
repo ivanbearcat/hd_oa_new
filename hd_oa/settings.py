@@ -86,7 +86,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'hd_oa',
 	    'USER': 'root',
-	    'PASSWORD': 'xxxxxxx',
+	    'PASSWORD': 'Hdyw@2021',
 	    'HOST': '127.0.0.1',
         'OPTIONS': {
             'init_command': 'SET sql_mode="STRICT_TRANS_TABLES"',
@@ -175,6 +175,7 @@ LDAP_AUTH_CONNECTION_PASSWORD = "0d^7^UPqj0" #需要同步用户才需要
 LDAP_AUTH_ACTIVE_DIRECTORY_DOMAIN = "npnets.cn"
 LDAP_AUTH_CONNECT_TIMEOUT = None
 LDAP_AUTH_RECEIVE_TIMEOUT = None
+LDAP_SERVER_IP = "192.168.9.251"
 
 
 
