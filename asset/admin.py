@@ -43,21 +43,21 @@ class commentInline(admin.StackedInline):
 class tableAdmin(admin.ModelAdmin, ExportExcelMixin, AdminConfirmMixin):
     inlines = [commentInline]
     # 自定义字段：外键备注
-    def commnet(self, obj):
+    def comment(self, obj):
         return [ i.info for i in obj.comment_set.all()]
-    commnet.short_description = "备注"
+    comment.short_description = "备注"
 
     list_display = ('name', 'status', 'server_ip', 'ssh_port', 'user', 'model', 'sn_mainboard', 'sn_BIOS', 'cpu',
                     'memory', 'disk', 'os', 'deployment_plan','doployment_mod', 'remote_card_ip', 'remote_card_user',
                     'organization', 'old_asset_number', 'new_asset_number', 'owner', 'owner_department', 'is_use',
-                    '_type', 'cost_center', 'checker', 'create_time', 'update_time', 'location', 'commnet')
+                    '_type', 'cost_center', 'checker', 'create_time', 'update_time', 'location', 'comment')
 
     # list_display_links = ('server_ip',)
 
     readonly_fields = ('organization', 'location')
 
     search_fields = ('name', 'server_ip', 'model', 'sn_mainboard', 'sn_BIOS', 'owner', 'checker', 'is_use',
-                     'remote_card_ip', 'new_asset_number', 'location')
+                     'remote_card_ip', 'new_asset_number', 'location', 'comment__info')
 
     date_hierarchy = 'create_time'
 
