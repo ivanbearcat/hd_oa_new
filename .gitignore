@@ -1,6 +1,4 @@
 # Byte-compiled / optimized / DLL files
-nohup.out
-settings.py
 __pycache__/
 *.py[cod]
 *$py.class

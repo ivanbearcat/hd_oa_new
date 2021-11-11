@@ -14,3 +14,4 @@ class table(models.Model):
     processor = models.CharField(verbose_name='处理人', max_length=8, blank=True, null=True, default='')
     create_time = models.DateTimeField(verbose_name='申请时间', auto_now_add=True)
     finish_time = models.DateTimeField(verbose_name='完成时间', blank=True, null=True)
+    telephone = models.CharField(verbose_name='电话', max_length=15, blank=False, null=False)

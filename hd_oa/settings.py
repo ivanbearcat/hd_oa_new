@@ -155,7 +155,7 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
 
-LDAP_AUTH_URL = "ldap://192.168.9.251:389"
+LDAP_AUTH_URL = "ldap://172.17.1.251:389"
 LDAP_AUTH_USE_TLS = False
 LDAP_AUTH_SEARCH_BASE = 'ou=Users,ou=npnets,dc=npnets,dc=cn'
 LDAP_AUTH_OBJECT_CLASS = "user"
@@ -175,7 +175,7 @@ LDAP_AUTH_CONNECTION_PASSWORD = "0d^7^UPqj0" #需要同步用户才需要
 LDAP_AUTH_ACTIVE_DIRECTORY_DOMAIN = "npnets.cn"
 LDAP_AUTH_CONNECT_TIMEOUT = None
 LDAP_AUTH_RECEIVE_TIMEOUT = None
-LDAP_SERVER_IP = "192.168.9.251"
+LDAP_SERVER_IP = "172.17.1.251"
 
 
 

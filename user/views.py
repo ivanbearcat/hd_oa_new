@@ -51,9 +51,9 @@ def post_chpasswd_ldap(request):
     username = request.user.username
 
     authed = auth.authenticate(username=username, password=password_current)
-    if not authed and authed.is_active:
+    if not authed:
         code = 1
-        msg = u'当前密码错误'
+        msg = u'当前密码错误或账号不可用'
     elif password_new == '' or password_new_again == '':
         code = 2
         msg = u'新密码不能为空'

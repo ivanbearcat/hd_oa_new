@@ -9,7 +9,8 @@ import datetime
 from libs.ldap_pack import search_user_info
 
 # 初始化钉钉机器人
-webhook = "https://oapi.dingtalk.com/robot/send?access_token=91d1eae7558afbce70054eb50b3e1ca245354f081ca6326a9a2f342187d957ec"
+# webhook = "https://oapi.dingtalk.com/robot/send?access_token=91d1eae7558afbce70054eb50b3e1ca245354f081ca6326a9a2f342187d957ec"
+webhook = "https://oapi.dingtalk.com/robot/send?access_token=703d5eb54df92bdb82e28164db4413acb218727d49a8a9a496b9360a2cc6958b"
 dingtalk = cb.DingtalkChatbot(webhook)
 
 
@@ -51,16 +52,18 @@ def table_data(request):
 
 @login_required
 def table_save(request):
-    username = search_user_info(request.user.username).get('name')
+    user_info = search_user_info(request.user.username)
+    username = user_info.get('name')
+    telephone = user_info.get('telephone')
     data = json.loads(request.body)
     cities = data.get('cities')
     _type = data.get('_type')
     description = data.get('description')
-    orm = _table(name=username, cities=cities, _type=_type, description=description)
+    orm = _table(name=username, cities=cities, _type=_type, description=description, telephone=telephone)
     orm.save()
     # 发送钉钉提醒
     text = f'**[{orm.id}]** **{username}** 申请了一条 **{cities}** 的 **{_type}** ○ '
-    dingtalk.send_markdown(title='等待完成', text=text)
+    dingtalk.send_markdown(title='申请', text=text)
     return JsonResponse({'code': 0, 'msg': '操作成功'})
 
 
@@ -68,19 +71,18 @@ def table_save(request):
 def table_commit(request):
     user_info = search_user_info(request.user.username)
     username = user_info.get('name')
-    telephone = user_info.get('telephone')
     data = json.loads(request.body)
     id = data.get('id')
     result = data.get('result')
     orm = _table.objects.select_for_update().get(id=id)
     orm.status = '已完成'
-    orm.processor = username
+    orm.processor = request.user.username
     if result:
         orm.result = result
     orm.finish_time = datetime.datetime.now()
     orm.save()
     text = f'**[{orm.id}]** **{username}** 完成了一条 **{orm.cities}** 的 **{orm._type}** √ 请查收'
-    dingtalk.send_markdown(title='等待完成', text=text, at_mobiles=[telephone])
+    dingtalk.send_markdown(title='完成', text=text, at_mobiles=[orm.telephone])
     return JsonResponse({'code': 0, 'msg': '操作成功'})
 
 
@@ -92,5 +94,5 @@ def table_del(request):
     orm = _table.objects.select_for_update().get(id=id)
     orm.delete()
     text = f'**[{orm.id}]** **{username}** 撤销了一条 **{orm.cities}** 的 **{orm._type}** ×'
-    dingtalk.send_markdown(title='等待完成', text=text)
+    dingtalk.send_markdown(title='撤销', text=text)
     return JsonResponse({'code': 0, 'msg': '撤销成功'})
