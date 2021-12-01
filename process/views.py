@@ -28,7 +28,6 @@ def table(request):
 def table_data(request):
     username = search_user_info(request.user.username).get('name')
     tableData = []
-    print(request.user.has_perm('process.can_view_all'))
     if not request.user.has_perm('process.can_view_all'):
         orm = _table.objects.filter(name=username)
     else:
@@ -76,7 +75,7 @@ def table_commit(request):
     result = data.get('result')
     orm = _table.objects.select_for_update().get(id=id)
     orm.status = '已完成'
-    orm.processor = request.user.username
+    orm.processor = username
     if result:
         orm.result = result
     orm.finish_time = datetime.datetime.now()
