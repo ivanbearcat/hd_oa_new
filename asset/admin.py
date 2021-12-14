@@ -65,7 +65,7 @@ class tableAdmin(admin.ModelAdmin, ExportExcelMixin, AdminConfirmMixin):
 
     list_filter = ('status',)
 
-    actions = ['export_as_excel', 'outbound', '_check', 'damage', 'scrap', 'approve']
+    actions = ['export_as_excel', 'inbound', 'outbound', '_check', 'damage', 'scrap', 'approve']
 
     # 出库action
     @confirm_action
@@ -88,12 +88,35 @@ class tableAdmin(admin.ModelAdmin, ExportExcelMixin, AdminConfirmMixin):
         # self.message_user(request, '执行成功')
     outbound.short_description = '出库'
 
+    # 入库action
+    @confirm_action
+    def inbound(self, request, queryset):
+        for obj in queryset:
+            if obj.status == '出库':
+                if obj.is_use == '是':
+                    obj.status = '使用中'
+                else:
+                    obj.status = '库存'
+                obj.save()
+                LogEntry.objects.log_action(
+                    user_id=request.user.pk,
+                    content_type_id=get_content_type_for_model(obj).pk,
+                    object_id=obj.pk,
+                    object_repr=str(obj),
+                    action_flag=CHANGE,
+                    change_message='入库',
+                )
+            else:
+                messages.add_message(request, messages.ERROR, f'{obj.name} 入库失败，状态错误')
+        # self.message_user(request, '执行成功')
+
+    inbound.short_description = '入库'
+
     # 盘点action
     @confirm_action
     def _check(self, request, queryset):
         for obj in queryset:
             if obj.status == '出库' or obj.status == '库存' or obj.status == '使用中':
-                obj.status = '库存'
                 obj.checker = request.user.username
                 obj.save()
                 LogEntry.objects.log_action(

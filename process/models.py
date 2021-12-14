@@ -5,7 +5,7 @@ class table(models.Model):
         permissions = (
             ('can_view_all', 'Can view all'),
         )
-    name = models.CharField(verbose_name='申请人', max_length=8, blank=False, null=False)
+    name = models.CharField(verbose_name='申请人', max_length=16, blank=False, null=False)
     cities = models.CharField(verbose_name='所属项目', max_length=16, blank=False, null=False)
     _type = models.CharField(verbose_name='需求类型', max_length=16, blank=False, null=False)
     description = models.CharField(verbose_name='需求描述', max_length=1024, blank=False, null=False)
